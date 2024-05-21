@@ -48,6 +48,7 @@ import time
 from tkinter import *
 from PIL import Image, ImageTk
 import numpy as np 
+from math import sqrt
 
 
 #-----------------------------------------------------------------------
@@ -73,9 +74,13 @@ image = np.asarray(img_in)
 nb_lignes = image.shape[0]
 nb_colonnes = image.shape[1]
 
-noyau = np.array([[0, -0.5, 0],
-                   [-0.5, 2, -0.5],
-                   [0, -0.5, 0]])
+noyau_v = np.array([[-1, 0, 1],
+                   [-2, 0, 2],
+                   [-1, 0, 1]])
+
+noyau_h = np.array([[-1, -2, -1],
+                    [0, 0, 0],
+                    [1, 2, 1]])
 
 #-----------------------------------------------------------------------
 
@@ -97,7 +102,9 @@ for ligne in range(nb_lignes):
     for col in range(nb_colonnes):
         if (ligne > 0 and ligne < nb_lignes-1 and col > 0 and col < nb_colonnes-1):
             for i in range(3):
-                img_test[ligne, col, i] = convolution(noyau, ligne, col, image[:,:,i])
+                somme_v = convolution(noyau_v, ligne, col, image[:,:,i])
+                somme_h = convolution(noyau_h, ligne, col, image[:,:,i])
+                img_test[ligne, col, i] = sqrt(somme_v*somme_v+somme_h*somme_h)
             
 img_out = 255-img_test
 
