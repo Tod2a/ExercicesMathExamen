@@ -21,7 +21,7 @@
 
 #----------------------------------------------------------------------#
 #                                                                      #
-#                           Exercice 2.6                               #
+#                           Exercice 2.6b                              #
 #                      isolation d'une couleur                         #                                                          
 #                                                                      #
 #----------------------------------------------------------------------#
@@ -34,7 +34,7 @@
 #                        Que fait ce programme?                        #           
 #----------------------------------------------------------------------#
 #                                                                      #
-#      ouvre une image et crée une image qui ne conserve que le bleu   #
+#      ouvre une image et crée une image qui ne conserve que le rouge  #
 #                                                                      #         
 #                                                                      #
 #----------------------------------------------------------------------#
@@ -60,7 +60,7 @@ import numpy as np
 # Définition / initialisation des variables               
 #-----------------------------------------------------------------------
 
-img = "images/Lenna512.png"
+img = "images/4-2-03.png"
 
 img_in = Image.open(img)
 image = np.asarray(img_in)
@@ -85,11 +85,12 @@ start = time.time()
 img_out = np.copy(image)
 for ligne in range(nb_lignes):
     for col in range(nb_colonnes):
-        img_out[ligne, col] = image[ligne, col]*[0,0,1]
+        if img_out[ligne, col, 0] < 220:
+            img_out[ligne, col] = [0, 0, 0]
 
 end = time.time()
 
-print("\nvous avez conservé le bleu de l'image", img ,", l'opération vous a prit: ", end-start, " secondes")
+print("\nvous avez conservé le rouge de l'image", img ,", l'opération vous a prit: ", end-start, " secondes")
 
 print("\n---------------------------------------------\n")
 
