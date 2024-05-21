@@ -44,52 +44,28 @@
 # Importation des bibliothèques                       
 #-----------------------------------------------------------------------
 
-#import csv                                                             # nécessaire pour sauver les données en csv pour lire le fichier des paramètres
 import time
-#import sys
-#import os
-import numpy as np                                                     # bibliothèque mathématique
-#import numpy.linalg as alg
-import PIL
-from PIL import Image, ImageTk											
-#import tkinter as tk   
-from tkinter import *                                                # affichage fenêtre graphique
-#import colorsys
-#import matplotlib                                                      # bibliothèque d'affichage de courbes
-#import matplotlib.pyplot as plt
-#import scipy
-#from scipy.ndimage import convolve
-#from scipy import signal
-#import cv2
-#import skimage
-#import sklearn
-#import pandas
-#import webcolors
+from tkinter import *
+from PIL import Image, ImageTk
+import numpy as np 
+
 
 #-----------------------------------------------------------------------
 # Encodage des fonctions 
 #-----------------------------------------------------------------------
 
-def reverse_horizontal(img):
-    img_start = Image.open(img)
-    img_array = np.asarray(img_start)
-    length = img_array.shape[0]
-    width = img_array.shape[1]
 
-    new_array = np.zeros((length, width, 3))  
-
-    for i in range(length):
-        for j in range(width):
-            reverse_column = width - 1 - j
-            new_array[i][j] = img_array[i][reverse_column]
-
-    return Image.fromarray(new_array)
 
 #-----------------------------------------------------------------------
 # Définition / initialisation des variables               
 #-----------------------------------------------------------------------
 
 img = "images/Lenna512.png"
+
+img_in = Image.open(img)
+image = np.asarray(img_in)
+nb_lignes = image.shape[0]
+nb_colonnes = image.shape[1]
 
 #-----------------------------------------------------------------------
 
@@ -106,14 +82,19 @@ print("\n---------------------------------------------\n")
 
 start = time.time()
 
-img_in = Image.open(img).save("image_entree.png")
-img_out = reverse_horizontal(img).save("image_sortie.png")
+img_out = np.copy(image)
+for ligne in range(nb_lignes):
+    for col in range(nb_colonnes):
+        img_out[ligne, col] = image[ligne, nb_colonnes-1-col]
 
 end = time.time()
 
-print("\nvous avez inversé l'image, l'opération vous a prit: ", end-start, " secondes")
+print("\nvous avez inversé l'image", img ,", l'opération vous a prit: ", end-start, " secondes")
 
 print("\n---------------------------------------------\n")
+
+Image.fromarray(image).save("image_entree.png")
+Image.fromarray(img_out).save("image_sortie.png")
 
 
 #-----------------------------------------------------------------------
