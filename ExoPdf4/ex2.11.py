@@ -21,8 +21,8 @@
 
 #----------------------------------------------------------------------#
 #                                                                      #
-#                           Exercice 2.10                              #
-#                       mixage de deux images                          #                                                          
+#                           Exercice 2.11                              #
+#                       Modifier le contraste                          #                                                          
 #                                                                      #
 #----------------------------------------------------------------------#
 
@@ -34,8 +34,8 @@
 #                        Que fait ce programme?                        #           
 #----------------------------------------------------------------------#
 #                                                                      #
-#         insertion d'une image dans une autre utilisant               #
-#                         le système de fond vert                      #         
+#      ouvre une image et crée une image avec le contrate modifié      #
+#                                                                      #         
 #                                                                      #
 #----------------------------------------------------------------------#
 
@@ -60,17 +60,12 @@ import numpy as np
 # Définition / initialisation des variables               
 #-----------------------------------------------------------------------
 
-img1 = "images/Lenna512.png"
-img2 = "images/4-2-03.png"
+img = "images/Lenna512.png"
 
-img_in1 = Image.open(img1)
-img_in2 = Image.open(img2)
-image1 = np.asarray(img_in1)
-image2 = np.asarray(img_in2)
-nb_lignes1 = image1.shape[0]
-nb_colonnes1 = image1.shape[1]
-nb_lignes2 = image2.shape[0]
-nb_colonnes2 = image2.shape[1]
+img_in = Image.open(img)
+image = np.asarray(img_in)
+nb_lignes = image.shape[0]
+nb_colonnes = image.shape[1]
 
 #-----------------------------------------------------------------------
 
@@ -82,25 +77,32 @@ nb_colonnes2 = image2.shape[1]
 
 
 # Encodez votre programme ici!
-print("\nFusion de deux images avec numpy et PIL\n")
+print("\nModification du contraste d'une image avec numpy et PIL\n")
 print("\n---------------------------------------------\n")
 
 start = time.time()
 
-img_out = np.copy(image2)
-for lignes in range(nb_lignes2):
-    for col in range(nb_colonnes2):
-        if img_out[lignes, col, 0] >= 220:
-            img_out[lignes, col] = image1[lignes, col]
+intensites = np.mean(image, axis=2)
+
+i_min = np.min(intensites)
+i_max = np.max(intensites)
+
+img_out = np.copy(image)
+
+for ligne in range(nb_lignes):
+    for col in range(nb_colonnes):
+        i = intensites[ligne, col]
+        i_n = 255 * (i-i_min) / ((i_max - i_min)* i)
+
+        img_out[ligne, col] = np.clip(image[ligne, col] * i_n, 0, 255)
 
 end = time.time()
 
-print("\nvous avez fusionné l'image ", img1 ," avec ", img2 ,"l'opération vous a prit: ", end-start, " secondes")
+print("\nvous avez modifié le contraste de l'image ", img ,", l'opération vous a prit: ", end-start, " secondes")
 
 print("\n---------------------------------------------\n")
 
-Image.fromarray(image1).save("image_entree1.png")
-Image.fromarray(image2).save("image_entree2.png")
+Image.fromarray(image).save("image_entree.png")
 Image.fromarray(img_out).save("image_sortie.png")
 
 
@@ -119,26 +121,19 @@ champ_label_result0.pack()
 empty_line2 = Label(root, text="")
 empty_line2.pack()
 
-champ_label_result1 = Label(root, text="Images que l'on va fusionner")
+champ_label_result1 = Label(root, text="Image avant transformation")
 champ_label_result1.pack() 
-image_in = Image.open("image_entree1.png")
+image_in = Image.open("image_entree.png")
 photo = ImageTk.PhotoImage(image_in)
-
-image_in2 = Image.open("image_entree2.png")
-photo3 = ImageTk.PhotoImage(image_in2)
 
 image_out = Image.open("image_sortie.png")
 photo2 = ImageTk.PhotoImage(image_out)
 
 canvas = Canvas(root,width=300,height=250,bg="silver")
-canvas.create_image(150,127, image=photo3)
-canvas.pack()
-
-canvas = Canvas(root,width=300,height=250,bg="silver")
 canvas.create_image(150,127, image=photo)
 canvas.pack()
 
-champ_label_result2 = Label(root, text="Image après fusion")
+champ_label_result2 = Label(root, text="Image après transformation")
 champ_label_result2.pack() 
 
 canvas = Canvas(root,width=300,height=250,bg="silver")
