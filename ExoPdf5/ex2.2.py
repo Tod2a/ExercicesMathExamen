@@ -21,8 +21,8 @@
 
 #----------------------------------------------------------------------#
 #                                                                      #
-#                           Exercice 2.1                               #
-#                         Inversion lignes                             #                                                          
+#                           Exercice 2.2                               #
+#          soustraction par multiple d'un autre ligne                  #                                                          
 #                                                                      #
 #----------------------------------------------------------------------#
 
@@ -34,8 +34,8 @@
 #                        Que fait ce programme?                        #           
 #----------------------------------------------------------------------#
 #                                                                      #
-#  création d'une fonction (A,i,j) qui inverse les deux lignes i,j     #
-#                       dans la matrice A                              #         
+#  création d'une fonction (A,k,i, alpha) qui soustrait un muliple     #
+#            (alpha) de la ligne i à la ligne k                        #         
 #                                                                      #
 #----------------------------------------------------------------------#
 
@@ -54,10 +54,10 @@ import keyboard                 #attention il faut installer la bibliothèque av
 
 #ajustement des valeurs i et j afin que l'utilisateur puisse introduire la ligne 3 
 #il ne devra pas prendre en compte que informatiquement, l'index des tableau commence à 0
-def switch_lines(A, i, j):
-    temp = A[i-1]
-    A[i-1] = A[j-1]
-    A[j-1] = temp
+def substract_linesByAlpha(A, k, i, alpha):
+    for j in range(len(A[k-1])):
+        value = A[i-1][j]*alpha
+        A[k-1][j] = A[k-1][j]-value
 
 def print_matrice(A):
     for row in A:
@@ -68,12 +68,13 @@ def print_matrice(A):
 #-----------------------------------------------------------------------
 
 matrice = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]
+    [2, 2, 3],
+    [2, 5, 6],
+    [1, 8, 9]
 ]
 ligne1 = 2
 ligne2 = 3
+multiply = 2
 
 #-----------------------------------------------------------------------
 
@@ -91,13 +92,14 @@ print("\n---------------------------------------------\n")
 
 start = time.time()
 
-print("\nAvant l'inversion:")
+print("\nAvant la soustraction:")
 print_matrice(matrice)
 
-switch_lines(matrice, 2, 3)
+substract_linesByAlpha(matrice, ligne1, ligne2, multiply)
 
-print("\nAprès l'inversion:")
+print("\nAprès la soustraction:")
 print_matrice(matrice)
+
 end = time.time()
 
 print("\n---------------------------------------------\n")
