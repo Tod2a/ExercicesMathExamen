@@ -21,8 +21,8 @@
 
 #----------------------------------------------------------------------#
 #                                                                      #
-#                           Exercice 2.3                               #
-#          Calcul du déterminant par la méthode du pivot de            #                                                          
+#                           Exercice 2.4                               #
+#            Calcul de l'inverse par la méthode du pivot de            #                                                          
 #                           Gauss-Jordan                               #
 #----------------------------------------------------------------------#
 
@@ -34,8 +34,8 @@
 #                        Que fait ce programme?                        #           
 #----------------------------------------------------------------------#
 #                                                                      #
-#             Ce programme calcule le déterminant d'une matrice        #
-#               à l'aide d'une fonction qui retournera le détermiannt  #         
+#             Ce programme calcule l'inverse d'une matrice             #
+#               à l'aide d'une fonction qui retournera l'inverse       #         
 #                                                                      #
 #----------------------------------------------------------------------#
 
@@ -45,6 +45,7 @@
 #-----------------------------------------------------------------------
 
 import time
+import numpy as np
 import keyboard                 #attention il faut installer la bibliothèque avec pip
 
 
@@ -64,43 +65,43 @@ def print_matrice(A):
         print(row)
 
 def switch_lines(A, i, j):
-    temp = A[i-1]
-    A[i-1] = A[j-1]
-    A[j-1] = temp
+    A[[i, j]] = A[[j, i]]
 
-def determinant(A):
-    n = len(A)
-    det = 1
+def inverse(A):
+    A = np.array(A, dtype=float)  
+    n = A.shape[0]
+    
+    I = np.eye(n)
+    augmented_matrix = np.hstack((A, I))
 
-    for i in range(n):
-        #recher le pivot
-        if A[i][i] == 0:
-            for k in range(i+1, n):
-                if A[k][i] != 0:
-                    switch_lines(A, i+1, k+1)
-                    det *= -1
-                    break
+    
+    for j in range(n):
+        # Rechercher le pivot
+        max_row_index = np.argmax(np.abs(augmented_matrix[:, j])) 
 
-        if A[i][i] == 0:
-            return 0
-        
-        for k in range(i+1, n):
-            factor = A[k][i] / A[i][i]
-            substract_linesByAlpha(A, k+1, i+1, factor)
+        if max_row_index != j:
+            switch_lines(augmented_matrix, max_row_index, j)
 
-    for i in range(n):
-        det *= A[i][i]
+        augmented_matrix[j] = augmented_matrix[j] / augmented_matrix[j, j]    
 
-    return det
+        for i in range(n):
+            if i != j:
+                augmented_matrix[i] = augmented_matrix[i] - augmented_matrix[j]*augmented_matrix[i,j]
+
+
+    # Extraire l'inverse de la matrice augmentée
+    inverse_matrix = augmented_matrix[:, n:]
+    inverse_matrix_rounded = np.round(inverse_matrix, decimals=2)
+    return inverse_matrix_rounded.tolist()
 
 #-----------------------------------------------------------------------
 # Définition / initialisation des variables               
 #-----------------------------------------------------------------------
 
 matrice = [
-    [-2, 2, -3],
-    [-1, 1, 3],
-    [2, 0, -1]
+    [1, 1, 2],
+    [1, 2, 1],
+    [2, 1, 1]
 ]
 
 #-----------------------------------------------------------------------
@@ -114,13 +115,17 @@ matrice = [
 
 # Encodez votre programme ici!
 print("\n---------------------------------------------\n")
-print("\nCalcul du déterminant d'une matrice\n")
+print("\nCalcul de l'inverse d'une matrice\n")
 print("\n---------------------------------------------\n")
 
 start = time.time()
 
+print("\n Matrice de base: ")
+print_matrice(matrice)
 
-print(determinant(matrice))
+print("\n inverse de cette matrice:")
+inv = inverse(matrice)
+print_matrice(inv)
 
 
 
@@ -128,7 +133,7 @@ end = time.time()
 
 print("\n---------------------------------------------\n")
 
-print("\nvous avez calculé le déterminant de la matrice, l'opération vous a prit: ", end-start, " secondes")
+print("\nvous avez calculé l'inverse de la matrice, l'opération vous a prit: ", end-start, " secondes")
 
 print("\nPoussez sur la touche q pour fermer cette fenêtre")
 
