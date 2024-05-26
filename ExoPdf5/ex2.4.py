@@ -91,17 +91,16 @@ def inverse(A):
 
     # Extraire l'inverse de la matrice augmentée
     inverse_matrix = augmented_matrix[:, n:]
-    inverse_matrix_rounded = np.round(inverse_matrix, decimals=2)
-    return inverse_matrix_rounded.tolist()
+    return inverse_matrix.tolist()
 
 #-----------------------------------------------------------------------
 # Définition / initialisation des variables               
 #-----------------------------------------------------------------------
 
 matrice = [
-    [1, 1, 2],
-    [1, 2, 1],
-    [2, 1, 1]
+    [2, 8, 2],
+    [8, 2, 1],
+    [6, 1, 11]
 ]
 
 #-----------------------------------------------------------------------
@@ -127,6 +126,10 @@ print("\n inverse de cette matrice:")
 inv = inverse(matrice)
 print_matrice(inv)
 
+print("\nVérification avec Numpy:")
+test = np.array(matrice, dtype=float)
+inv = np.linalg.inv(test)
+print_matrice(inv)
 
 
 end = time.time()
