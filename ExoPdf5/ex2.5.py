@@ -127,11 +127,8 @@ def inverse(A):
 
 def solve(A, T):
     #Utilisation de la fonction de numpy pour éviter les problèmes d'arrondis avec la fonction de base
-    #inv_A = np.linalg.inv(A)
-    #print_matrice(inv_A)
-    inv_test = inverse(A)
-    print_matrice(inv_test)
-    X = BuildGridMultiplied(inv_test, T)
+    inv_A = np.linalg.inv(A)
+    X = BuildGridMultiplied(inv_A, T)
     return X
 #-----------------------------------------------------------------------
 # Définition / initialisation des variables               
