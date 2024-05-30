@@ -5,9 +5,7 @@ import random
 import keyboard     
 
 def mat_mult(A, B):
-
     #Multiplie deux matrices carrées A et B.
-
     size = len(A)
     result = [[0] * size for _ in range(size)]
     for i in range(size):
@@ -15,18 +13,17 @@ def mat_mult(A, B):
             result[i][j] = sum(A[i][k] * B[k][j] for k in range(size))
     return result
 
-def mat_identity(size):
 
+def mat_identity(size):
     #Crée une matrice identité de taille donnée.
-  
     return [[1 if i == j else 0 for j in range(size)] for i in range(size)]
+
 
 def matrix_power(matrix, power):
     #Calcule la x-ème puissance d'une matrice carrée en utilisant l'exponentiation rapide.
     size = len(matrix)
     result = mat_identity(size)
     base = matrix
-
     while power > 0:
         if power % 2 == 1:
             result = mat_mult(result, base)
@@ -35,11 +32,13 @@ def matrix_power(matrix, power):
 
     return result
 
+
 def random_matrix(size):
     
     #Génère une matrice carrée aléatoire de taille donnée avec des valeurs entre 0 et 1.
     
     return [[random.random() for _ in range(size)] for _ in range(size)]
+
 
 def print_matrix(matrix):
     
@@ -47,6 +46,7 @@ def print_matrix(matrix):
     
     for i in range(len(matrix)):
         print(matrix[i]) 
+
 
 def random_matrix_power(n, x):
     #Génère une matrice carrée aléatoire de taille n et calcule sa x-ème puissance.
