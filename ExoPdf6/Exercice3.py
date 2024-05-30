@@ -21,7 +21,7 @@
 
 #----------------------------------------------------------------------#
 #                                                                      #
-#                           Exercice 2                                 #
+#                           Exercice 3                                 #
 #                      Fonction de convolution                         #                                                          
 #                                                                      #
 #----------------------------------------------------------------------#
@@ -34,7 +34,7 @@
 #                        Que fait ce programme?                        #           
 #----------------------------------------------------------------------#
 #                                                                      #
-#       application de la fonction de convolution à l'exmple du cour   #
+#                  vérification de l'exercice 2 avec scipy             #
 #                                                                      #  
 #                                                                      #
 #----------------------------------------------------------------------#
@@ -47,6 +47,7 @@
 import time
 import numpy as np 
 import keyboard                 #attention il faut installer la bibliothèque avec pip
+from scipy.ndimage import convolve
 
 
 #-----------------------------------------------------------------------
@@ -73,7 +74,7 @@ def convolution(noyau, lin, col, image):
     return valeur
 
 
-def convolve(matrix, mask):
+def convolvebis(matrix, mask):
     mask = rotate_mask_180(mask)
     matrix = np.array(matrix)
     mask = np.array(mask)
@@ -128,13 +129,26 @@ print("\n---------------------------------------------\n")
 
 start = time.time()
 
-newmatrix = convolve(matrix, mask)
+newmatrix = convolvebis(matrix, mask)
             
 
 end = time.time()
 
 print(newmatrix)
 print("\nla convolution de la matrice, l'opération vous a prit: ", end-start, " secondes")
+
+print("\nVérification avec scipy: ")
+
+scimatrix = convolve(matrix, mask)
+
+print(scimatrix)
+
+print("\nla différence entre les deux matrices est due à la gestion des bord")
+print("\nscipy utilise la méthode reflect par défaut, on peut le changer en constant")
+print("\nscipy avec la méthode constant: ")
+
+scimatrix2 = scimatrix = convolve(matrix, mask, mode='constant', cval=0.0)
+print(scimatrix2)
 
 print("\nPoussez sur la touche q pour fermer cette fenêtre")
 

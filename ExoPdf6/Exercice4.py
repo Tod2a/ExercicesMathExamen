@@ -21,7 +21,7 @@
 
 #----------------------------------------------------------------------#
 #                                                                      #
-#                           Exercice 2                                 #
+#                           Exercice 1                                 #
 #                      Fonction de convolution                         #                                                          
 #                                                                      #
 #----------------------------------------------------------------------#
@@ -34,8 +34,8 @@
 #                        Que fait ce programme?                        #           
 #----------------------------------------------------------------------#
 #                                                                      #
-#       application de la fonction de convolution à l'exmple du cour   #
-#                                                                      #  
+#       Crée une fonction qui fait la convolution entre une matrice    #
+#                           et un masque                               #  
 #                                                                      #
 #----------------------------------------------------------------------#
 
@@ -47,72 +47,35 @@
 import time
 import numpy as np 
 import keyboard                 #attention il faut installer la bibliothèque avec pip
+from scipy.ndimage import convolve
+from tkinter import *
+from PIL import Image, ImageTk
 
 
 #-----------------------------------------------------------------------
 # Encodage des fonctions 
 #-----------------------------------------------------------------------
-def rotate_mask_180(mask):
-    # Créer une nouvelle matrice pour le masque retourné
-    rotated_mask = [[0 for _ in range(len(mask[0]))] for _ in range(len(mask))]
-    rows = len(mask)
-    cols = len(mask[0])
-    
-    for i in range(rows):
-        for j in range(cols):
-            rotated_mask[i][j] = mask[rows - 1 - i][cols - 1 - j]
-    
-    return rotated_mask
 
-
-def convolution(noyau, lin, col, image):
-    valeur = 0
-    for i in range(3):
-        for j in range(3):
-            valeur += noyau[i, j] * image[lin - 1 + i, col - 1 + j]
-    return valeur
-
-
-def convolve(matrix, mask):
-    mask = rotate_mask_180(mask)
-    matrix = np.array(matrix)
-    mask = np.array(mask)
-    length, width = matrix.shape
-
-    # Retourner le masque (rotation de 180 degrés)
-    #mask = np.flipud(np.fliplr(mask))
-
-    # Ajouter des bordures de zéros à l'image
-    padded_matrix = np.pad(matrix, pad_width=1, mode='constant')
-
-    output = np.zeros((length, width))
-
-    # Appliquer la convolution
-    for ligne in range(1, length + 1):
-        for col in range(1, width + 1):
-            output[ligne - 1, col - 1] = convolution(mask, ligne, col, padded_matrix)
-    
-    return output
-    
+def blur_filter(matrix, mask_size):
+    mask = np.ones((mask_size, mask_size)) / (mask_size * mask_size)
+    # Si l'image est en couleur, appliquer le filtre sur chaque canal séparément
+    if matrix.ndim == 3:
+        blurred_matrix = np.zeros_like(matrix)
+        for i in range(matrix.shape[2]):
+            blurred_matrix[:, :, i] = convolve(matrix[:, :, i], mask, mode='constant', cval=0.0)
+        return blurred_matrix
+    else:
+        return convolve(matrix, mask, mode='constant', cval=0.0)
 
 
 #-----------------------------------------------------------------------
 # Définition / initialisation des variables               
 #-----------------------------------------------------------------------
 
-matrix = [
-    [2, 1, 3, 0],
-    [1, 1, 0, 5],
-    [3, 3, 1, 0],
-    [2, 0, 0, 2]
-]
+img = "images/Lenna512.png"
 
-
-mask = [
-    [1, 0, 2],
-    [2, 1, 0],
-    [1, 0, 3]
-]
+img_in = Image.open(img)
+image = np.asarray(img_in)
 
 #-----------------------------------------------------------------------
 
@@ -123,27 +86,80 @@ mask = [
 #-----------------------------------------------------------------------
 
 # Encodez votre programme ici!
-print("\nConvolution d'une matrice\n")
+print("\nFiltre de flou linéaire de Lenna avec un masque 3x3 et 10x10\n")
 print("\n---------------------------------------------\n")
 
 start = time.time()
 
-newmatrix = convolve(matrix, mask)
-            
+img_out1 = blur_filter(image, 3)      
 
 end = time.time()
 
-print(newmatrix)
-print("\nla convolution de la matrice, l'opération vous a prit: ", end-start, " secondes")
+print(f"\nle filtre 3x3 de lenna est réussit, l'opération vous a prit: {end-start} secondes")
 
-print("\nPoussez sur la touche q pour fermer cette fenêtre")
+start2 = time.time()
+
+img_out2 = blur_filter(image, 10)
+
+end2 = time.time()
+
+print(f"\nle filtre 10x10 de lenna est réussit, l'opération vous a prit: {end2-start2} secondes")
 
 print("\n---------------------------------------------\n")
 
-while True:
-    if keyboard.is_pressed('q'):
-        break
+Image.fromarray(image).save("image_entree.png")
+Image.fromarray(img_out1).save("image_sortie.png")
+Image.fromarray(img_out2).save("image_sortie2.png")
 
+
+#-----------------------------------------------------------------------
+# Affichage dans tkinter
+#-----------------------------------------------------------------------
+
+root=Tk()
+
+empty_line0 = Label(root, text="")
+empty_line0.pack()
+empty_line00 = Label(root, text="LABO COURS DE MATH: TRAITEMENT D'IMAGES")
+empty_line00.pack()
+champ_label_result0 = Label(root, text="On affiche l'image avant transformation et après")
+champ_label_result0.pack()
+empty_line2 = Label(root, text="")
+empty_line2.pack()
+
+champ_label_result1 = Label(root, text="Image avant transformation")
+champ_label_result1.pack() 
+image_in = Image.open("image_entree.png")
+photo = ImageTk.PhotoImage(image_in)
+
+image_out = Image.open("image_sortie.png")
+photo2 = ImageTk.PhotoImage(image_out)
+
+image_out2 = Image.open("image_sortie2.png")
+photo5 = ImageTk.PhotoImage(image_out2)
+
+canvas = Canvas(root,width=300,height=250,bg="silver")
+canvas.create_image(150,127, image=photo)
+canvas.pack()
+
+champ_label_result2 = Label(root, text="Image après transformation")
+champ_label_result2.pack() 
+
+canvas = Canvas(root,width=300,height=250,bg="silver")
+canvas.create_image(150,127, image=photo2)
+canvas.pack()
+
+canvas = Canvas(root,width=300,height=250,bg="silver")
+canvas.create_image(150,127, image=photo5)
+canvas.pack()
+
+empty_line3 = Label(root, text="")
+empty_line3.pack()
+bouton_valider = Button(root, text="Quit", command=root.destroy)
+bouton_valider.pack()
+empty_line4 = Label(root, text="")
+empty_line4.pack()
+root.mainloop()
 
 
 #-----------------------------------------------------------------------
