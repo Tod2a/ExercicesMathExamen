@@ -47,7 +47,7 @@ x = digits.images.reshape((len(digits.images), -1))
 print(x.shape,"\n")
 print(digits.images[0],"\n")
 print(x[0],"\n")
-chiffre = cv2.imread("images/5.png")
+chiffre = cv2.imread("image.png")
 
 
 chiffre_grey = cv2.cvtColor(chiffre, cv2.COLOR_BGR2GRAY)
@@ -115,3 +115,5 @@ plt.title(f'cible: {1}, prediction: {predictions}')
 plt.axis('off')
 plt.show()
 
+while True:
+    pass  
