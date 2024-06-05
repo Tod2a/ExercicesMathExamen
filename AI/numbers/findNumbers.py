@@ -25,7 +25,7 @@ from sklearn.neural_network import MLPClassifier
 
 
 def extract_digits(image_path):
-    chiffre = cv2.imread("images/chiffre5.png")
+    chiffre = cv2.imread(image_path)
 
 
     chiffre_grey = cv2.cvtColor(chiffre, cv2.COLOR_BGR2GRAY)
